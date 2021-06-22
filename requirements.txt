@@ -1,0 +1,5 @@
+pywin32
+redis
+requests
+pyqt5
+watchdog
