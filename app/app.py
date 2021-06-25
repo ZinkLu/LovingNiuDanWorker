@@ -2,30 +2,31 @@ import sys
 
 from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
+from .widgets.config_widget import ConfigView
 from .widgets.log_widget import LogWindow
 
 
 class Start(QPushButton):
+
     def __init__(self, *args, **kwargs):
         super(Start, self).__init__("开始", *args, **kwargs)
         self.log_window = LogWindow()
+        self.clicked.connect(self.show_log_view)
 
-    def hitButton(self, QPoint):
+    def show_log_view(self):
         self.log_window.show()
-        return super().hitButton(QPoint)
 
 
 class Config(QPushButton):
+
     def __init__(self, *args, **kwargs):
         super(Config, self).__init__("配置", *args, **kwargs)
-        # self.log_window = LogWindow()
-
-    def hitButton(self, QPoint):
-        self.log_window.show()
-        return super().hitButton(QPoint)
+        self.config_view = ConfigView()
+        self.clicked.connect(lambda: self.config_view.show())
 
 
 class Window(QWidget):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("自动打印服务")

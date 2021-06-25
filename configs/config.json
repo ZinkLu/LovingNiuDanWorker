@@ -1,30 +1,34 @@
 {
-    "sleep": {
-        "desc": "每一次键盘操作之间停顿的时间（秒）",
-        "value": 3
-    },
-    "times": {
-        "desc": "需要进行多少次操作",
-        "value": 3
-    },
-    "printer": {
-        "desc": "使用的打印机",
-        "value": ""
-    },
-    "host": {
-        "desc": "redis host",
-        "value": ""
-    },
-    "port": {
-        "desc": "redis port",
-        "value": 3306
-    },
-    "password": {
-        "desc": "redis password",
-        "value": ""
-    },
-    "db": {
-        "decs": "redis db",
-        "value": 0
-    }
+  "sleep": {
+    "desc": "每一次键盘操作之间停顿的时间（秒）",
+    "value": 1
+  },
+  "times": {
+    "desc": "需要进行多少次操作",
+    "value": 3
+  },
+  "printer": {
+    "desc": "使用的打印机",
+    "value": "sdf"
+  },
+  "host": {
+    "desc": "redis host",
+    "value": "127.0.0.1"
+  },
+  "port": {
+    "desc": "redis port",
+    "value": 6379
+  },
+  "password": {
+    "desc": "redis password",
+    "value": ""
+  },
+  "db": {
+    "desc": "redis db",
+    "value": 0
+  },
+  "channel": {
+    "desc": "redis channel",
+    "value": "print_task"
+  }
 }

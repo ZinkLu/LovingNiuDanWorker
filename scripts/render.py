@@ -1,4 +1,3 @@
-from functools import reduce
 from pathlib import Path
 from string import Template
 from uuid import uuid4
@@ -6,10 +5,13 @@ from uuid import uuid4
 import docx
 
 T_FILE = Path("templates") / "template.docx"
+OUT_PUT = Path("output")
+
+OUT_PUT.mkdir(exist_ok=True)
 
 
 def render_docx(context=None) -> Path:
-    file = Path('out') / f'{uuid4()}.docx'
+    file = OUT_PUT / f'{uuid4()}.docx'
     with file.open('wb') as f, T_FILE.open("rb") as t:
         f.write(t.read())
 
