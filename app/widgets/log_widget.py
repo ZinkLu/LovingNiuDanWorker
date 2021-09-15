@@ -29,10 +29,16 @@ class QueueThread(QThread):
     def stop(self):
         if self.worker is not None:
             self.worker.stop()
+        print('正在关闭worker线程')
         if self.isRunning():
+            print('正在 terminate worker线程')
             self.terminate()
-            self.quit()
-            self.wait()
+            print('terminate worker线程结束')
+            print('正在 quit worker线程')
+            # self.quit()
+            print('quit worker线程结束')
+            # self.wait(5)
+        print('worker线程关闭完毕')
 
 
 class ClearScreen(QPushButton):
@@ -120,7 +126,7 @@ class LogWindow(QWidget):
         layout.addWidget(ClearLog(logger_view))
         self.setLayout(layout)
 
-        self.q_thread: Optional[QueueThread] = None
+        self.q_thread: Optional[QueueThread] = QueueThread()
         self.watch_thread = WatchFile(logger_view)
 
     def closeEvent(self, QCloseEvent):
