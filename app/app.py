@@ -31,10 +31,17 @@ class Window(QWidget):
         super().__init__(*args, **kwargs)
         self.setWindowTitle("自动打印服务")
         layout = QVBoxLayout()
-        layout.addWidget(Start())
-        layout.addWidget(Config())
+        self.log_button = Start()
+        self.config_button = Config()
+        layout.addWidget(self.log_button)
+        layout.addWidget(self.config_button)
         self.resize(400, 400)
         self.setLayout(layout)
+
+    def closeEvent(self, a0) -> None:
+        self.log_button.log_window.close()
+        self.config_button.config_view.close()
+        return super().closeEvent(a0)
 
 
 class App(QApplication):

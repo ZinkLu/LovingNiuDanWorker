@@ -1,3 +1,4 @@
+import time
 from pathlib import Path
 from typing import Optional
 
@@ -6,8 +7,6 @@ from PyQt5 import QtGui
 from PyQt5.QtCore import QThread, pyqtSignal
 from PyQt5.QtWidgets import QHBoxLayout, QPlainTextEdit, QPushButton, QWidget
 from utils.logger import logger
-from watchdog.events import FileSystemEventHandler
-from watchdog.observers import Observer
 from workers.providers.redis_provider import RedisProvider
 from workers.worker import Worker
 
@@ -36,17 +35,6 @@ class QueueThread(QThread):
             self.wait()
 
 
-class MyFileEvent(FileSystemEventHandler):
-
-    def __init__(self, logger_view: "Logger") -> None:
-        super().__init__()
-        self.logger_view = logger_view
-
-    def on_modified(self, event):
-        self.logger_view.update.emit()
-        return super().on_modified(event)
-
-
 class ClearScreen(QPushButton):
 
     def __init__(self, logger_view: "Logger", *args, **kwargs):
@@ -57,7 +45,7 @@ class ClearScreen(QPushButton):
     def clear(self) -> bool:
         self.logger_view.clear()
         logger.info("clear log")
-        self.logger_view.update.emit()
+        self.logger_view.update_file_signal.emit()
         return True
 
 
@@ -74,10 +62,25 @@ class ClearLog(QPushButton):
         return True
 
 
+class WatchFile(QueueThread):
+
+    def __init__(self, lg: "Logger"):
+        self.lg = lg
+        super(WatchFile, self).__init__()
+
+    def run(self):
+        with open(self.lg.LOGFILE) as self.lg.watch_fp:
+            while True:
+                if self.lg.watch_fp.read():
+                    self.lg.update_file_signal.emit()
+                else:
+                    time.sleep(0.1)
+
+
 class Logger(QPlainTextEdit):
     LOGDIR = Path("logs")
     LOGFILE = LOGDIR / 'log.log'
-    update = pyqtSignal()
+    update_file_signal = pyqtSignal()
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, readOnly=True, **kwargs)
@@ -86,14 +89,9 @@ class Logger(QPlainTextEdit):
 
         self.file = self.LOGFILE.as_posix()
         self.fp = self.LOGFILE.open('r+')
+        self.watch_fp = self.LOGFILE.open('r')
         self.setPlainText(self.fp.read())
-        self._observer()
-        self.update.connect(self._update_view)
-
-    def _observer(self):
-        observer = Observer()
-        observer.schedule(MyFileEvent(self), self.LOGDIR.as_posix())
-        observer.start()
+        self.update_file_signal.connect(self._update_view)
 
     def _update_view(self):
         self.appendPlainText(self.fp.read())
@@ -105,6 +103,7 @@ class Logger(QPlainTextEdit):
         with self.LOGFILE.open('w') as t:
             t.write('')
         self.fp.seek(0)
+        self.watch_fp.seek(0)
 
 
 class LogWindow(QWidget):
@@ -122,11 +121,13 @@ class LogWindow(QWidget):
         self.setLayout(layout)
 
         self.q_thread: Optional[QueueThread] = None
+        self.watch_thread = WatchFile(logger_view)
 
     def closeEvent(self, QCloseEvent):
         print("quit thread", self.q_thread)
         if self.q_thread is not None:
             self.q_thread.stop()
+        self.watch_thread.terminate()
         res = super(LogWindow, self).closeEvent(QCloseEvent)
         return res
 
@@ -135,6 +136,7 @@ class LogWindow(QWidget):
         if self.q_thread is None:
             self.q_thread = QueueThread()
 
+        self.watch_thread.start()
         self.logger_view.moveCursor(QtGui.QTextCursor.End)
         self.logger_view.ensureCursorVisible()
         self.q_thread.start()

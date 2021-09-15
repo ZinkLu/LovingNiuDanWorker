@@ -8,7 +8,7 @@ if not os.path.exists("logs"):
     os.mkdir("logs")
 
 h = FileHandler(os.path.join('logs', 'log.log'))
-f = Formatter('%(process)d %(thread)s %(asctime)s %(levelname)s    %(filename)s %(funcName)s %(message)s')
+f = Formatter('%(asctime)s - %(levelname)s - %(message)s')
 h.setFormatter(f)
 logger.addHandler(h)
 

@@ -1,7 +1,7 @@
 from configs.config import Config
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QStandardItem, QStandardItemModel
-from PyQt5.QtWidgets import QHBoxLayout, QLabel, QListView, QPushButton, QTextEdit, QVBoxLayout, QWidget
+from PyQt5.QtWidgets import QHBoxLayout, QLabel, QListView, QPushButton, QTextEdit, QVBoxLayout, QWidget, QSizePolicy
 
 
 class ConfigView(QWidget):
@@ -74,8 +74,10 @@ class ConfigItem(QWidget):
 
         self.key_item = QLabel(self.config_key)
         layout.addWidget(self.key_item)
+        self.key_item.setFixedWidth(100)
 
         self.desc_item = QLabel(self.value_obj['desc'])
+        self.desc_item.setFixedWidth(300)
         layout.addWidget(self.desc_item)
 
         self.value_item = QTextEdit(str(self.value_obj['value']))

@@ -11,13 +11,13 @@ if sys.platform == "win32":
 
     def print_file(file_path, printer=None):
         if printer is None:
-            logger.info("no printer selected, using default")
+            logger.info("没有选择打印机，使用默认打印机进行打印")
         printer = printer or win32print.GetDefaultPrinter()
-        logger.info("using print {} to print file {}".format(printer, file_path))
+        logger.info("正在使用打印机 {} 打印文件 {}".format(printer, file_path))
         try:
             win32api.ShellExecute(0, "print", file_path, f'/d:"{printer}"', ".", 0)
         except Exception as e:
-            logger.info("print error check log")
+            logger.info("打印错误，请检查文件")
             logger.exception(e)
             return
 

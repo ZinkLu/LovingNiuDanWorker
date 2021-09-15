@@ -12,7 +12,13 @@ class RedisProvider(BaseProvider):
                                                                                        port=port,
                                                                                        password=password,
                                                                                        db=db))
-        redis = StrictRedis(host=host, port=port, db=db, password=password, **kwargs)
+        redis = StrictRedis(
+            host=host,
+            port=port,
+            db=db,
+            password=password,
+            socket_keepalive=True,
+        )
         self.redis = redis
 
     def consume(self, channel) -> dict:
