@@ -31,6 +31,7 @@ class RedisProvider(BaseProvider):
             yield json.loads(message['data'])
 
     def stop(self):
-        print("closing")
+        print("closing redis provider...")
         self.pubsub.close()
         self.redis.close()
+        print("redis provider closed!")
