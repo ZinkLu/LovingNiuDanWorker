@@ -4,8 +4,8 @@ from threading import Lock
 
 LOCK = Lock()
 
-CONFIG_FILE = Path('configs', 'config.json')
-CONFIG_JSON = json.load(CONFIG_FILE.open())  # type: dict
+CONFIG_FILE = Path('configs', 'config.json').absolute()
+CONFIG_JSON = json.load(CONFIG_FILE.open(encoding='utf-8'))  # type: dict
 
 NULL_CONFIG = {'desc': "", "value": ""}
 
@@ -29,14 +29,14 @@ class Config:
     @with_lock
     def set_config(cls, key, value):
         CONFIG_JSON[key]['value'] = value
-        json.dump(CONFIG_JSON, CONFIG_FILE.open('w'), ensure_ascii=False, indent=2)
+        json.dump(CONFIG_JSON, CONFIG_FILE.open('w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
     @classmethod
     @with_lock
     def flush_config(cls, config):
         global CONFIG_JSON
         CONFIG_JSON = config
-        json.dump(CONFIG_JSON, CONFIG_FILE.open('w'), ensure_ascii=False, indent=2)
+        json.dump(CONFIG_JSON, CONFIG_FILE.open('w', encoding='utf-8'), ensure_ascii=False, indent=2)
 
     @classmethod
     @with_lock

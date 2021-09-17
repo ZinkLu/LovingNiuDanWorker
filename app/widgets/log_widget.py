@@ -69,7 +69,7 @@ class WatchFile(QueueThread):
         super(WatchFile, self).__init__()
 
     def run(self):
-        with open(self.lg.LOGFILE) as self.lg.watch_fp:
+        with open(self.lg.LOGFILE, encoding='utf8') as self.lg.watch_fp:
             while True:
                 if self.lg.watch_fp.read():
                     self.lg.update_file_signal.emit()
@@ -85,11 +85,11 @@ class Logger(QPlainTextEdit):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, readOnly=True, **kwargs)
         if not self.LOGFILE.exists():
-            self.LOGFILE.open('w').close()
+            self.LOGFILE.open('w', encoding='utf8').close()
 
         self.file = self.LOGFILE.as_posix()
-        self.fp = self.LOGFILE.open('r+')
-        self.watch_fp = self.LOGFILE.open('r')
+        self.fp = self.LOGFILE.open('r+', encoding='utf8')
+        self.watch_fp = self.LOGFILE.open('r', encoding='utf8')
         self.setPlainText(self.fp.read())
         self.update_file_signal.connect(self._update_view)
 

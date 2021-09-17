@@ -7,7 +7,7 @@ logger.setLevel("INFO")
 if not os.path.exists("logs"):
     os.mkdir("logs")
 
-h = FileHandler(os.path.join('logs', 'log.log'))
+h = FileHandler(os.path.join('logs', 'log.log'), encoding='utf8')
 f = Formatter('%(asctime)s - %(levelname)s - %(message)s')
 h.setFormatter(f)
 logger.addHandler(h)

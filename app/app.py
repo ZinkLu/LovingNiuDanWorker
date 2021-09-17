@@ -25,6 +25,35 @@ class Config(QPushButton):
         self.clicked.connect(lambda: self.config_view.show())
 
 
+class Test(QPushButton):
+
+    test_info = {
+        'birth_day': 'TEST',
+        'birth_place': 'TEST',
+        'constellation': 'TEST',
+        'contract': 'TEST',
+        'education': 'TEST',
+        'gender': 'TEST',
+        'height': 'TEST',
+        'hobbies': 'TEST',
+        'marriage': 'TEST',
+        'name': 'TEST',
+        'profession': 'TEST',
+        'requirements': 'TEST',
+        'self_introduction': 'TEST',
+    }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__("打印测试", *args, **kwargs)
+        self.clicked.connect(self.print_test)
+
+    def print_test(self):
+        from scripts.printer import print_pipline
+        from scripts.render import render_docx
+        out_put = render_docx(self.test_info)
+        print_pipline(out_put.as_posix())
+
+
 class Window(QWidget):
 
     def __init__(self, *args, **kwargs):
@@ -33,8 +62,10 @@ class Window(QWidget):
         layout = QVBoxLayout()
         self.log_button = Start()
         self.config_button = Config()
+        self.test_button = Test()
         layout.addWidget(self.log_button)
         layout.addWidget(self.config_button)
+        layout.addWidget(self.test_button)
         self.resize(400, 400)
         self.setLayout(layout)
 

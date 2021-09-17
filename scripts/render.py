@@ -6,7 +6,7 @@ import docx
 from utils.logger import logger
 
 T_FILE = Path("templates") / "template.docx"
-OUT_PUT = Path("output")
+OUT_PUT = Path("output").absolute()
 
 OUT_PUT.mkdir(exist_ok=True)
 
