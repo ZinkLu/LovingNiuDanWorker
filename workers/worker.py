@@ -1,5 +1,6 @@
 from pprint import pformat
 
+from configs.config import Config
 from scripts.printer import print_pipline
 from scripts.render import render_docx
 from utils.logger import logger
@@ -22,7 +23,7 @@ class Worker(BaseWorker):
             out_put = render_docx(message_data)
             logger.info("模板渲染完成.....")
             logger.info("正在调用打印服务.....")
-            print_pipline(out_put.as_posix())
+            print_pipline(out_put.as_posix(), times=Config.get_config("times"), sleep=Config.get_config('sleep'))
             logger.info("打印完成.....")
 
     def stop(self):

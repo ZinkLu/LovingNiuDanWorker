@@ -1,5 +1,6 @@
 import sys
 
+from configs.config import Config as C
 from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
 
 from .widgets.config_widget import ConfigView
@@ -51,7 +52,7 @@ class Test(QPushButton):
         from scripts.printer import print_pipline
         from scripts.render import render_docx
         out_put = render_docx(self.test_info)
-        print_pipline(out_put.as_posix())
+        print_pipline(out_put.as_posix(), times=C.get_config("times"), sleep=C.get_config("sleep"))
 
 
 class Window(QWidget):
