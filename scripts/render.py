@@ -20,12 +20,26 @@ def render_docx(context=None) -> Path:
     context = context or dict()
     doc = docx.Document(file)
 
+    # 处理图片
+    pic = context.get("picture_bytes")
+    if pic:
+        for inline_shape in doc.inline_shapes:
+            blip = inline_shape._inline.graphic.graphicData.pic.blipFill.blip
+            rId = blip.embed
+            document_part = doc.part
+            image_part = document_part.related_parts[rId]
+            image_part._blob = pic
+
+
     for para in doc.paragraphs:
         start_run = None
         start_run_text = ""
 
         for run in para.runs:
             temp_text = run.text
+
+            if not temp_text:
+                continue
 
             if start_run and "$" not in temp_text:
                 if "}" in temp_text:

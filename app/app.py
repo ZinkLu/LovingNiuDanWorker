@@ -1,4 +1,5 @@
 import sys
+from pathlib import Path
 
 from configs.config import Config as C
 from PyQt5.QtWidgets import QApplication, QPushButton, QVBoxLayout, QWidget
@@ -29,6 +30,7 @@ class Config(QPushButton):
 class Test(QPushButton):
 
     test_info = {
+        'picture_bytes': (Path(__file__).parent.parent / 'templates' / 'example.png').read_bytes(),
         'birth_day': 'TEST',
         'birth_place': 'TEST',
         'constellation': 'TEST',
