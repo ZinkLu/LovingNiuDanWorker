@@ -1,3 +1,4 @@
+import base64
 from pathlib import Path
 from string import Template
 from uuid import uuid4
@@ -23,6 +24,11 @@ def render_docx(context=None) -> Path:
     # 处理图片
     pic = context.get("picture_bytes")
     if pic:
+        try:
+            pic = base64.b64decode(pic)
+        except:
+            logger.error("图片文件解析失败")
+            ...
         for inline_shape in doc.inline_shapes:
             blip = inline_shape._inline.graphic.graphicData.pic.blipFill.blip
             rId = blip.embed

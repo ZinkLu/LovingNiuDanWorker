@@ -1,4 +1,5 @@
 import sys
+import base64
 from pathlib import Path
 
 from configs.config import Config as C
@@ -30,7 +31,7 @@ class Config(QPushButton):
 class Test(QPushButton):
 
     test_info = {
-        'picture_bytes': (Path(__file__).parent.parent / 'templates' / 'example.png').read_bytes(),
+        'picture_bytes': base64.b64encode((Path(__file__).parent.parent / 'templates' / 'example.png').read_bytes()),
         'birth_day': 'TEST',
         'birth_place': 'TEST',
         'constellation': 'TEST',
