@@ -1,4 +1,5 @@
 from pprint import pformat
+from urllib import parse
 
 from configs.config import Config
 from scripts.printer import print_pipline
@@ -20,6 +21,11 @@ class Worker(BaseWorker):
             logger.info("获取新的打印任务！")
             logger.info("打印信息：\n%s", pformat(message_data))
             logger.info("正在渲染模板中.....")
+
+            if picture_url := message_data.get("picture_url"):
+                url = parse.urljoin(Config.get_config("apiHost", 'https://foo'), picture_url)
+                message_data['picture_url'] = url
+
             out_put = render_docx(message_data)
             logger.info("模板渲染完成.....")
             logger.info("正在调用打印服务.....")

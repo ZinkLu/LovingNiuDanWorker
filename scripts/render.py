@@ -1,3 +1,5 @@
+import hashlib
+import urllib3
 import base64
 from pathlib import Path
 from string import Template
@@ -10,6 +12,8 @@ T_FILE = Path("templates") / "template.docx"
 OUT_PUT = Path("output").absolute()
 
 OUT_PUT.mkdir(exist_ok=True)
+
+PIC_MD5 = "529f754246ba9fe09f39e968f37d54bf"
 
 
 def render_docx(context=None) -> Path:
@@ -28,14 +32,28 @@ def render_docx(context=None) -> Path:
             pic = base64.b64decode(pic)
         except:
             logger.error("图片文件解析失败")
-            ...
+
+    pic_url = context.get("picture_url")
+    if not pic and pic_url:
+        http = urllib3.PoolManager()
+
+        try:
+            resp = http.request("GET", pic_url, timeout=10)
+        except:
+            logger.error("图片下载失败, url %s", pic_url)
+        else:
+            if resp.status == 200:
+                pic = resp.read()
+
+    if pic:
+        # 使用 md5 作为模板
         for inline_shape in doc.inline_shapes:
             blip = inline_shape._inline.graphic.graphicData.pic.blipFill.blip
             rId = blip.embed
             document_part = doc.part
             image_part = document_part.related_parts[rId]
-            image_part._blob = pic
-
+            if image_part._blob and hashlib.md5(image_part._blob).hexdigest() == PIC_MD5:
+                image_part._blob = pic
 
     for para in doc.paragraphs:
         start_run = None
