@@ -38,12 +38,16 @@ def render_docx(context=None) -> Path:
         http = urllib3.PoolManager()
 
         try:
+            logger.info("正在下载图片数据 :%s", pic_url)
             resp = http.request("GET", pic_url, timeout=10)
+            logger.info("下载图片数据完成")
         except:
             logger.error("图片下载失败, url %s", pic_url)
         else:
             if resp.status == 200:
-                pic = resp.read()
+                pic = resp.data
+            else:
+                logger.error("图片下载失败, url %s", pic_url)
 
     if pic:
         # 使用 md5 作为模板
